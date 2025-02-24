@@ -1,75 +1,41 @@
-#!/bin/bash
-# Update system and install PHP
-yum update -y
-amazon-linux-extras enable php7.4
-yum remove -y php php-cli httpd
-yum install -y php php-cli php-mysqlnd php-json php-opcache php-xml php-mbstring php-curl php-zip httpd wget unzip
+##############################
+# EC2 Instance and User Data
+##############################
 
-# Start and enable Apache
-systemctl start httpd
-systemctl enable httpd
+resource "aws_instance" "instance" {
+  ami                         = var.ami_id
+  instance_type               = "t2.micro"
+  availability_zone           = var.availability_zone_1
+  associate_public_ip_address = true
+  key_name                    = var.key_name
+  subnet_id                   = aws_subnet.public_1.id
+  vpc_security_group_ids      = [aws_security_group.sg_vpc.id]
+  # Update the IAM instance profile if needed:
+  iam_instance_profile        = "your-iam-profile"
+  count                       = 1
 
-# Remove default Apache page
-rm -f /var/www/html/index.html
-rm -f /var/www/html/index.php
+  tags = {
+    Name = "${var.project_name}-instance"
+  }
 
-# Download WordPress
-cd /tmp
-wget https://wordpress.org/latest.zip
-unzip latest.zip
-cp -r wordpress/* /var/www/html/
+  user_data = base64encode(data.template_file.wordpress_userdata.rendered)
 
-# Set permissions
-chown -R apache:apache /var/www/html
-chmod -R 755 /var/www/html
+  provisioner "local-exec" {
+    command = "echo Instance Type = ${self.instance_type}, Instance ID = ${self.id}, Public IP = ${self.public_ip}, AMI ID = ${self.ami} >> metadata"
+  }
+}
 
-# Configure wp-config.php
-cd /var/www/html
-cp wp-config-sample.php wp-config.php
+data "template_file" "wordpress_userdata" {
+  template = file("userdata.tpl")
+  vars = {
+    wordpress_rds_endpoint = var.wordpress_rds_endpoint
+  }
+}
 
-# Update WordPress configuration
-sed -i 's/database_name_here/wordpress_db/' wp-config.php
-sed -i 's/username_here/sriwp_dbuser/' wp-config.php
-sed -i 's/password_here/Password123!#$/' wp-config.php
-sed -i "s/localhost/${wordpress_rds_endpoint}/" wp-config.php
+output "ec2_rendered_user_data" {
+  value = data.template_file.wordpress_userdata.rendered
+}
 
-# Add WordPress salts
-SALT=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/)
-sed -i "/#@-/,/#@+/c\\$SALT" wp-config.php
-
-# Configure Apache for WordPress
-cat > /etc/httpd/conf.d/wordpress.conf << 'EOF'
-<Directory /var/www/html/>
-    Options Indexes FollowSymLinks
-    AllowOverride All
-    Require all granted
-</Directory>
-EOF
-
-# Create .htaccess file
-cat > /var/www/html/.htaccess << 'EOF'
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase /
-RewriteRule ^index\.php$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.php [L]
-</IfModule>
-EOF
-
-# Set proper permissions for .htaccess
-chown apache:apache /var/www/html/.htaccess
-chmod 644 /var/www/html/.htaccess
-
-# Enable mod_rewrite
-sed -i 's/#LoadModule rewrite_module/LoadModule rewrite_module/' /etc/httpd/conf.modules.d/00-base.conf
-
-# Restart Apache
-systemctl restart httpd
-
-# Clean up
-rm -rf /tmp/wordpress
-rm -f /tmp/latest.zip
-
-echo "WordPress installation completed"
+output "instance_public_ip" {
+  value = aws_instance.instance[0].public_ip
+}
