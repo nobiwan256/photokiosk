@@ -1,16 +1,16 @@
 ##############################
-# EC2 Instance and User Data
+# Locals
 ##############################
-
 locals {
-  # Render the userdata file with Terraform variable substitution.
   raw_userdata = templatefile("${path.module}/userdata.tpl", {
     wordpress_rds_endpoint = var.wordpress_rds_endpoint
   })
-  # Replace any instance of %{REQUEST_FILENAME} with %%{REQUEST_FILENAME} so that it's output literally.
   wordpress_userdata = regexreplace(local.raw_userdata, "%\\{REQUEST_FILENAME\\}", "%%{REQUEST_FILENAME}")
 }
 
+##############################
+# EC2 Instance
+##############################
 resource "aws_instance" "instance" {
   ami                         = var.ami_id
   instance_type               = "t2.micro"
@@ -32,10 +32,13 @@ resource "aws_instance" "instance" {
   }
 }
 
-output "instance_public_ip" {
-  value = aws_instance.instance[0].public_ip
-}
+##############################
+# ALB & Target Group
+##############################
+resource "aws_lb_target_group" "target_group" {
+  name        = "${var.project_name}-tg"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "instance"
+  vpc_id      = aws_vpc.dev_v
 
-output "ec2_rendered_user_data" {
-  value = local.wordpress_userdata
-}
