@@ -26,7 +26,7 @@ resource "aws_instance" "instance" {
 }
 
 data "template_file" "wordpress_userdata" {
-  template = file("wordpress_userdata.tpl")
+  template = file("userdata.tpl")
   vars = {
     wordpress_rds_endpoint = var.wordpress_rds_endpoint
   }
