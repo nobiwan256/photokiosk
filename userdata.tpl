@@ -46,7 +46,7 @@ cat > /etc/httpd/conf.d/wordpress.conf << 'EOF'
 </Directory>
 EOF
 
-# Create .htaccess file
+# Create .htaccess file in the document root
 cat > /var/www/html/.htaccess << 'EOF'
 <IfModule mod_rewrite.c>
 RewriteEngine On
