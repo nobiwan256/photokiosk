@@ -21,3 +21,4 @@ resource "aws_s3_bucket_acl" "wordpress_bucket_acl" {
   bucket = aws_s3_bucket.wordpress_bucket.id
   acl    = "private"
 }
+
