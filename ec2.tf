@@ -3,9 +3,12 @@
 ##############################
 
 locals {
-  wordpress_userdata = templatefile("${path.module}/userdata.tpl", {
+  # Render the userdata file with Terraform variable substitution.
+  raw_userdata = templatefile("${path.module}/userdata.tpl", {
     wordpress_rds_endpoint = var.wordpress_rds_endpoint
   })
+  # Replace any instance of %{REQUEST_FILENAME} with %%{REQUEST_FILENAME} so that it's output literally.
+  wordpress_userdata = regexreplace(local.raw_userdata, "%\\{REQUEST_FILENAME\\}", "%%{REQUEST_FILENAME}")
 }
 
 resource "aws_instance" "instance" {
