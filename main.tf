@@ -1,114 +1,89 @@
 ##############################
-# VPC and Subnets
+# Locals
 ##############################
-
-resource "aws_vpc" "dev_vpc" {
-  cidr_block           = var.cidr_block
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-
-  tags = {
-    Name        = var.project_name
-    Environment = var.env
-  }
+locals {
+  raw_userdata = templatefile("${path.module}/userdata.tpl", {
+    wordpress_rds_endpoint = var.wordpress_rds_endpoint
+  })
+  wordpress_userdata = regexreplace(local.raw_userdata, "%\\{REQUEST_FILENAME\\}", "%%{REQUEST_FILENAME}")
 }
 
-resource "aws_subnet" "public_1" {
-  vpc_id                  = aws_vpc.dev_vpc.id
-  cidr_block              = var.public_subnet_cidr_1
-  availability_zone       = var.availability_zone_1
-  map_public_ip_on_launch = true
+##############################
+# EC2 Instance
+##############################
+resource "aws_instance" "instance" {
+  ami                         = var.ami_id
+  instance_type               = "t2.micro"
+  availability_zone           = var.availability_zone_1
+  associate_public_ip_address = true
+  key_name                    = var.key_name
+  subnet_id                   = aws_subnet.public_1.id
+  vpc_security_group_ids      = [aws_security_group.sg_vpc.id]
+  count                       = 1
 
   tags = {
-    Name = "${var.project_name}-public-1"
+    Name = "${var.project_name}-instance"
   }
-}
 
-resource "aws_subnet" "private_1" {
-  vpc_id            = aws_vpc.dev_vpc.id
-  cidr_block        = var.private_subnet_cidr_1
-  availability_zone = var.availability_zone_1
+  user_data = base64encode(local.wordpress_userdata)
 
-  tags = {
-    Name = "${var.project_name}-private-1"
-  }
-}
-
-resource "aws_subnet" "public_2" {
-  vpc_id                  = aws_vpc.dev_vpc.id
-  cidr_block              = var.public_subnet_cidr_2
-  availability_zone       = var.availability_zone_2
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "${var.project_name}-public-2"
-  }
-}
-
-resource "aws_subnet" "private_2" {
-  vpc_id            = aws_vpc.dev_vpc.id
-  cidr_block        = var.private_subnet_cidr_2
-  availability_zone = var.availability_zone_2
-
-  tags = {
-    Name = "${var.project_name}-private-2"
+  provisioner "local-exec" {
+    command = "echo Instance Type = ${self.instance_type}, Instance ID = ${self.id}, Public IP = ${self.public_ip}, AMI ID = ${self.ami} >> metadata"
   }
 }
 
 ##############################
-# Internet Gateway
+# ALB & Target Group (Fixed)
 ##############################
+resource "aws_lb_target_group" "target_group" {
+  name        = "${var.project_name}-tg"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "instance"
+  vpc_id      = aws_vpc.dev_vpc.id
 
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.dev_vpc.id
-
-  tags = {
-    Name = "${var.project_name}-igw"
-  }
-}
-
-##############################
-# Route Tables and Associations
-##############################
-
-resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.dev_vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
+  health_check {
+    enabled             = true
+    interval            = 10
+    path                = "/"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
   }
 
   tags = {
-    Name = "${var.project_name}-public-rt"
+    Name = "${var.project_name}-tg"
   }
-}
+} # ✅ Closing brace added here
 
-# Private subnets will not have outbound Internet access (no NAT gateway)
-resource "aws_route_table" "private_rt" {
-  vpc_id = aws_vpc.dev_vpc.id
+resource "aws_lb" "application_lb" {
+  name               = "${var.project_name}-alb"
+  internal           = false
+  load_balancer_type = "application"
+  subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+  security_groups    = [aws_security_group.sg_vpc.id]
+  ip_address_type    = "ipv4"
 
   tags = {
-    Name = "${var.project_name}-private-rt"
+    Name = "${var.project_name}-alb"
   }
 }
 
-resource "aws_route_table_association" "public_1_assoc" {
-  route_table_id = aws_route_table.public_rt.id
-  subnet_id      = aws_subnet.public_1.id
+resource "aws_lb_listener" "alb_listener" {
+  load_balancer_arn = aws_lb.application_lb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target_group.arn
+  }
 }
 
-resource "aws_route_table_association" "public_2_assoc" {
-  route_table_id = aws_route_table.public_rt.id
-  subnet_id      = aws_subnet.public_2.id
-}
-
-resource "aws_route_table_association" "private_1_assoc" {
-  route_table_id = aws_route_table.private_rt.id
-  subnet_id      = aws_subnet.private_1.id
-}
-
-resource "aws_route_table_association" "private_2_assoc" {
-  route_table_id = aws_route_table.private_rt.id
-  subnet_id      = aws_subnet.private_2.id
-}
+resource "aws_lb_target_group_attachment" "ec2_attach" {
+  count            = length(aws_instance.instance)
+  target_group_arn = aws_lb_target_group.target_group.arn
+  target_id        = aws_instance.instance[count.index].id
+} # ✅ Closing brace added here
