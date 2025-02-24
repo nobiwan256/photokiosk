@@ -17,9 +17,9 @@ variable "cidr_block" {
 }
 
 variable "ami_id" {
-  description = "AMI ID for the EC2 instance"
+  description = "AMI ID for the EC2 instance (must be valid in us-west-2)"
   type        = string
-  default     = "ami-0230bd60aa48260c6"
+  default     = "ami-0c5204531f799e0c6"  # Example: Amazon Linux 2 AMI
 }
 
 variable "key_name" {
@@ -80,4 +80,10 @@ variable "s3_bucket_name" {
   description = "The S3 bucket name for storing WordPress files"
   type        = string
   default     = "photokiosk000256"
+}
+
+variable "wordpress_rds_endpoint" {
+  description = "Endpoint for the WordPress RDS database"
+  type        = string
+  default     = "localhost"  # Update with your actual RDS endpoint if available
 }
