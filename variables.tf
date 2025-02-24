@@ -1,7 +1,7 @@
 variable "project_name" {
   description = "The name of the project"
   type        = string
-  default     = "photokiosk"
+  default     = "photokiosk"  # Change to your desired project name
 }
 
 variable "env" {
@@ -19,7 +19,7 @@ variable "cidr_block" {
 variable "ami_id" {
   description = "AMI ID for the EC2 instance"
   type        = string
-  default     = "ami-0230bd60aa48260c6"
+  default     = "ami-0230bd60aa48260c6"  # Update if needed
 }
 
 variable "key_name" {
@@ -79,5 +79,5 @@ variable "egress_cidr_block" {
 variable "s3_bucket_name" {
   description = "The S3 bucket name for syncing files"
   type        = string
-  default     = "photokiosk000256"
+  default     = "photokiosk000256"  # Replace with your bucket name
 }
