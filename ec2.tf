@@ -4,7 +4,7 @@
 
 resource "aws_instance" "instance" {
   ami                         = var.ami_id
-  instance_type               = "t3.micro"
+  instance_type               = "t2.micro"
   availability_zone           = var.availability_zone_1
   associate_public_ip_address = true
   key_name                    = var.key_name
@@ -18,22 +18,22 @@ resource "aws_instance" "instance" {
     Name = "${var.project_name}-instance"
   }
 
-  user_data = base64encode(data.template_file.ec2userdatatemplate.rendered)
+  user_data = base64encode(data.template_file.wordpress_userdata.rendered)
 
   provisioner "local-exec" {
     command = "echo Instance Type = ${self.instance_type}, Instance ID = ${self.id}, Public IP = ${self.public_ip}, AMI ID = ${self.ami} >> metadata"
   }
 }
 
-data "template_file" "ec2userdatatemplate" {
-  template = file("userdata.tpl")
+data "template_file" "wordpress_userdata" {
+  template = file("wordpress_userdata.tpl")
   vars = {
-    bucket_name = var.s3_bucket_name
+    wordpress_rds_endpoint = var.wordpress_rds_endpoint
   }
 }
 
 output "ec2_rendered_user_data" {
-  value = data.template_file.ec2userdatatemplate.rendered
+  value = data.template_file.wordpress_userdata.rendered
 }
 
 output "instance_public_ip" {
