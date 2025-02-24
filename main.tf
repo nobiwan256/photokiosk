@@ -342,22 +342,15 @@ resource "aws_security_group" "allow_aurora_access" {
 }
 
 ##############################
-# S3 Bucket
+# Basic S3 Bucket for WordPress Files
 ##############################
 
-resource "aws_s3_bucket" "project_bucket" {
+resource "aws_s3_bucket" "wordpress_bucket" {
   bucket = var.s3_bucket_name
+  acl    = "private"  # Minimal ACL configuration; adjust to "public-read" if needed
 
   tags = {
-    Name        = var.project_name
+    Name        = "${var.project_name}-wordpress-bucket"
     Environment = var.env
-  }
-}
-
-resource "aws_s3_bucket_versioning" "versioning_example" {
-  bucket = aws_s3_bucket.project_bucket.id
-
-  versioning_configuration {
-    status = "Enabled"
   }
 }
