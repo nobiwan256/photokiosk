@@ -159,6 +159,9 @@ resource "aws_instance" "instance" {
 
 data "template_file" "ec2userdatatemplate" {
   template = file("userdata.tpl")
+  vars = {
+    bucket_name = var.s3_bucket_name
+  }
 }
 
 output "ec2rendered" {
