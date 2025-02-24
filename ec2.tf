@@ -1,7 +1,3 @@
-##############################
-# EC2 Instance and User Data
-##############################
-
 locals {
   wordpress_userdata = templatefile("${path.module}/userdata.tpl", {
     wordpress_rds_endpoint = var.wordpress_rds_endpoint
@@ -16,7 +12,6 @@ resource "aws_instance" "instance" {
   key_name                    = var.key_name
   subnet_id                   = aws_subnet.public_1.id
   vpc_security_group_ids      = [aws_security_group.sg_vpc.id]
-  # Update the IAM instance profile if needed:
   iam_instance_profile        = "your-iam-profile"
   count                       = 1
 
