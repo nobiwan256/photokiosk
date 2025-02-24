@@ -46,14 +46,14 @@ cat > /etc/httpd/conf.d/wordpress.conf << 'EOF'
 </Directory>
 EOF
 
-# Create .htaccess file in the document root
+# Create .htaccess file
 cat > /var/www/html/.htaccess << 'EOF'
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
 RewriteRule ^index\.php$ - [L]
-RewriteCond %%{REQUEST_FILENAME} !-f
-RewriteCond %%{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
 EOF
