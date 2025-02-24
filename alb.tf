@@ -1,17 +1,9 @@
-##############################
-# Application Load Balancer (ALB)
-##############################
-
 resource "aws_lb_target_group" "target_group" {
   name        = "${var.project_name}-tg"
   port        = 80
   protocol    = "HTTP"
   target_type = "instance"
   vpc_id      = aws_vpc.dev_vpc.id
-
-  tags = {
-    Name = var.project_name
-  }
 
   health_check {
     enabled             = true
@@ -22,6 +14,10 @@ resource "aws_lb_target_group" "target_group" {
     timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 2
+  }
+
+  tags = {
+    Name = "${var.project_name}-tg"
   }
 }
 
