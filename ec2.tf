@@ -3,7 +3,7 @@
 ##############################
 
 resource "aws_instance" "wordpress_instance" {
-  ami                    = var.ami_id
+  ami                    = var.ami_id  # Make sure var.ami_id doesn't have brackets in the variable definition
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.public_1.id
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
