@@ -1,27 +1,37 @@
 ##############################
-# S3 Bucket for WordPress Files
+# S3 Bucket for WordPress
 ##############################
 
 resource "aws_s3_bucket" "wordpress_bucket" {
   bucket = var.s3_bucket_name
 
   tags = {
-    Name        = "${var.project_name}-wordpress-bucket"
+    Name        = "${var.project_name}-bucket"
     Environment = var.env
   }
+}
 
-  lifecycle {
-    ignore_changes = [
-      object_lock_configuration,
-    ]
+resource "aws_s3_bucket_ownership_controls" "wordpress_bucket_ownership" {
+  bucket = aws_s3_bucket.wordpress_bucket.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
   }
 }
 
-resource "aws_s3_bucket_acl" "wordpress_bucket_acl" {
+resource "aws_s3_bucket_public_access_block" "wordpress_bucket_public_access" {
   bucket = aws_s3_bucket.wordpress_bucket.id
-  acl    = "private"
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
-resource "random_id" "bucket_id" {
-  byte_length = 4
+resource "aws_s3_bucket_versioning" "wordpress_bucket_versioning" {
+  bucket = aws_s3_bucket.wordpress_bucket.id
+  
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
