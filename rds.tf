@@ -25,8 +25,15 @@ resource "aws_db_instance" "wordpress_db" {
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   skip_final_snapshot    = true
   publicly_accessible    = false
+  backup_retention_period = 7
+  deletion_protection    = false
 
   tags = {
     Name = "${var.project_name}-wordpress-db"
   }
+  
+  depends_on = [
+    aws_db_subnet_group.wordpress_db_subnet_group,
+    aws_security_group.rds_sg
+  ]
 }
