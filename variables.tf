@@ -19,7 +19,7 @@ variable "cidr_block" {
 variable "ami_id" {
   description = "AMI ID for the EC2 instance"
   type        = string
-  default     = "ami-0230bd60aa48260c6"  # Amazon Linux 2
+  default     = "ami-0230bd60aa48260c6"
 }
 
 variable "key_name" {
@@ -29,37 +29,37 @@ variable "key_name" {
 }
 
 variable "availability_zone_1" {
-  description = "Availability zone public subnet 1 and instance"
+  description = "Availability zone for public subnet 1 and instance"
   type        = string
   default     = "us-west-2a"
 }
 
 variable "availability_zone_2" {
-  description = "Availability zone public subnet 2"
+  description = "Availability zone for public subnet 2"
   type        = string
   default     = "us-west-2b"
 }
 
 variable "public_subnet_cidr_1" {
-  description = "CIDR public subnet 1"
+  description = "CIDR for public subnet 1"
   type        = string
   default     = "10.0.1.0/24"
 }
 
 variable "public_subnet_cidr_2" {
-  description = "CIDR public subnet 2"
+  description = "CIDR for public subnet 2"
   type        = string
   default     = "10.0.3.0/24"
 }
 
 variable "private_subnet_cidr_1" {
-  description = "CIDR private subnet 1 for RDS"
+  description = "CIDR for private subnet 1"
   type        = string
   default     = "10.0.2.0/24"
 }
 
 variable "private_subnet_cidr_2" {
-  description = "CIDR private subnet 2 for RDS"
+  description = "CIDR for private subnet 2"
   type        = string
   default     = "10.0.4.0/24"
 }
@@ -85,7 +85,6 @@ variable "rds_username" {
 variable "rds_password" {
   description = "Password for the RDS instance"
   type        = string
-  default     = "Password123!#$"
   sensitive   = true
 }
 
@@ -95,7 +94,7 @@ variable "rds_db_name" {
   default     = "wordpress_db"
 }
 
-variable "token" {
-  description = "A token for authentication or other purposes"
+variable "s3_bucket_name" {
+  description = "Name of the S3 bucket for WordPress files"
   type        = string
 }
