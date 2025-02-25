@@ -1,3 +1,8 @@
+##############################
+# Variables
+##############################
+
+# Project Settings
 variable "project_name" {
   description = "The name of the project"
   type        = string
@@ -10,22 +15,11 @@ variable "env" {
   default     = "dev"
 }
 
+# Network Configuration
 variable "cidr_block" {
   description = "The CIDR block for the VPC"
   type        = string
   default     = "10.0.0.0/16"
-}
-
-variable "ami_id" {
-  description = "AMI ID for the EC2 instance"
-  type        = string
-  default     = "ami-0230bd60aa48260c6"
-}
-
-variable "key_name" {
-  description = "Key name for SSH access"
-  type        = string
-  default     = "capstone_key"
 }
 
 variable "availability_zone_1" {
@@ -76,6 +70,20 @@ variable "egress_cidr_block" {
   default     = "0.0.0.0/0"
 }
 
+# EC2 Instance Settings
+variable "ami_id" {
+  description = "AMI ID for the EC2 instance"
+  type        = string
+  default     = "ami-0230bd60aa48260c6"
+}
+
+variable "key_name" {
+  description = "Key name for SSH access"
+  type        = string
+  default     = "capstone_key"
+}
+
+# RDS Database Settings
 variable "rds_username" {
   description = "Username for the RDS instance"
   type        = string
@@ -95,8 +103,9 @@ variable "rds_db_name" {
   default     = "wordpress_db"
 }
 
+# S3 Bucket
 variable "s3_bucket_name" {
   description = "Name of the S3 bucket for WordPress files"
   type        = string
-  default     = "wordpress-bucket-${random_id.bucket_id.hex}"  # ✅ Default value added with randomness
+  default     = "wordpress-bucket"  # ✅ Default value added
 }
