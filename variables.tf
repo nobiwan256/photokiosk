@@ -17,9 +17,9 @@ variable "cidr_block" {
 }
 
 variable "ami_id" {
-  description = "AMI ID for the EC2 instance (must be valid in us-west-2)"
+  description = "AMI ID for the EC2 instance"
   type        = string
-  default     = "ami-0c5204531f799e0c6"
+  default     = "ami-0230bd60aa48260c6"  # Amazon Linux 2
 }
 
 variable "key_name" {
@@ -29,37 +29,37 @@ variable "key_name" {
 }
 
 variable "availability_zone_1" {
-  description = "Availability zone for public subnet 1 and EC2 instance"
+  description = "Availability zone public subnet 1 and instance"
   type        = string
   default     = "us-west-2a"
 }
 
 variable "availability_zone_2" {
-  description = "Availability zone for public subnet 2"
+  description = "Availability zone public subnet 2"
   type        = string
   default     = "us-west-2b"
 }
 
 variable "public_subnet_cidr_1" {
-  description = "CIDR for public subnet 1"
+  description = "CIDR public subnet 1"
   type        = string
   default     = "10.0.1.0/24"
 }
 
 variable "public_subnet_cidr_2" {
-  description = "CIDR for public subnet 2"
+  description = "CIDR public subnet 2"
   type        = string
   default     = "10.0.3.0/24"
 }
 
 variable "private_subnet_cidr_1" {
-  description = "CIDR for private subnet 1"
+  description = "CIDR private subnet 1 for RDS"
   type        = string
   default     = "10.0.2.0/24"
 }
 
 variable "private_subnet_cidr_2" {
-  description = "CIDR for private subnet 2"
+  description = "CIDR private subnet 2 for RDS"
   type        = string
   default     = "10.0.4.0/24"
 }
@@ -76,14 +76,21 @@ variable "egress_cidr_block" {
   default     = "0.0.0.0/0"
 }
 
-variable "s3_bucket_name" {
-  description = "The S3 bucket name for storing WordPress files"
+variable "rds_username" {
+  description = "Username for the RDS instance"
   type        = string
-  default     = "photokiosk000256"
+  default     = "sriwp_dbuser"
 }
 
-variable "wordpress_rds_endpoint" {
-  description = "Endpoint for the WordPress RDS database"
+variable "rds_password" {
+  description = "Password for the RDS instance"
   type        = string
-  default     = "localhost"
+  default     = "Password123!#$"
+  sensitive   = true
+}
+
+variable "rds_db_name" {
+  description = "Database name for the RDS instance"
+  type        = string
+  default     = "wordpress_db"
 }
