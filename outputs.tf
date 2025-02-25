@@ -3,14 +3,9 @@ output "vpc_id" {
   value       = aws_vpc.dev_vpc.id
 }
 
-output "wordpress_public_ip" {
-  description = "Public IP of the WordPress EC2 instance"
-  value       = aws_instance.wordpress_instance.public_ip
-}
-
-output "wordpress_public_dns" {
-  description = "Public DNS of the WordPress EC2 instance"
-  value       = aws_instance.wordpress_instance.public_dns
+output "alb_dns_name" {
+  description = "DNS name of the Application Load Balancer"
+  value       = aws_lb.wordpress_alb.dns_name
 }
 
 output "mysql_endpoint" {
@@ -20,5 +15,10 @@ output "mysql_endpoint" {
 
 output "wordpress_url" {
   description = "URL to access WordPress"
-  value       = "http://${aws_instance.wordpress_instance.public_dns}"
+  value       = "http://${aws_lb.wordpress_alb.dns_name}"
+}
+
+output "asg_name" {
+  description = "Name of the Auto Scaling Group"
+  value       = aws_autoscaling_group.wordpress_asg.name
 }
