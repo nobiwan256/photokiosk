@@ -12,7 +12,6 @@ terraform {
     organization = "your-organization"
     workspaces {
       name = "photokiosk-workspace"
-      
     }
   }
   */
