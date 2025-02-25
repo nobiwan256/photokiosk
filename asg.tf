@@ -23,17 +23,23 @@ resource "aws_launch_template" "wordpress_lt" {
   lifecycle {
     create_before_destroy = true
   }
+  
+  depends_on = [
+    aws_security_group.ec2_sg,
+    aws_db_instance.wordpress_db
+  ]
 }
 
 # Auto Scaling Group
 resource "aws_autoscaling_group" "wordpress_asg" {
   name                = "${var.project_name}-asg"
-  desired_capacity    = 1
-  min_size            = 1
-  max_size            = 2
+  desired_capacity    = var.asg_desired_capacity
+  min_size            = var.asg_min_size
+  max_size            = var.asg_max_size
   vpc_zone_identifier = [aws_subnet.public_1.id, aws_subnet.public_2.id]
   target_group_arns   = [aws_lb_target_group.wordpress_tg.arn]
   health_check_type   = "ELB"
+  health_check_grace_period = 300
   
   launch_template {
     id      = aws_launch_template.wordpress_lt.id
@@ -55,6 +61,13 @@ resource "aws_autoscaling_group" "wordpress_asg" {
   lifecycle {
     create_before_destroy = true
   }
+  
+  depends_on = [
+    aws_launch_template.wordpress_lt,
+    aws_lb_target_group.wordpress_tg,
+    aws_subnet.public_1,
+    aws_subnet.public_2
+  ]
 }
 
 # Auto Scaling Policy - CPU Based Scaling
@@ -69,4 +82,6 @@ resource "aws_autoscaling_policy" "wordpress_cpu_policy" {
     }
     target_value = 70.0
   }
+  
+  depends_on = [aws_autoscaling_group.wordpress_asg]
 }
