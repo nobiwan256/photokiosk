@@ -22,3 +22,6 @@ resource "aws_s3_bucket_acl" "wordpress_bucket_acl" {
   acl    = "private"
 }
 
+resource "random_id" "bucket_id" {
+  byte_length = 4
+}
