@@ -1,6 +1,23 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
+
+  # If you're using Terraform Cloud, uncomment and modify these lines
+  /*
+  cloud {
+    organization = "your-organization"
+    workspaces {
+      name = "photokiosk-workspace"
+      
+    }
+  }
+  */
+}
+
 provider "aws" {
-  region     = "us-west-2"
-  access_key = "ASIAXPJ3LA3OZVDNUB5V"
-  secret_key = "ESRkNzLiiBa8AZ+1h4HNOGgGJuz/NPWXnUq/XTTy"
-  token      = "IQoJb3JpZ2luX2VjEPH//////////wEaCXVzLXdlc3QtMiJGMEQCIBQeoJCh3SNwxAWd2rwS93mpxelAokr1ii1+ECjq6bghAiAPgDf3zT7RWY+umWizfLDyNvbtinBnU7XzS4+yqebkZSqmAggqEAEaDDUxMzkwOTkxNzQwNSIMI0bCkm/l24oML+zFKoMC0KRnxwfGhqzwjfvUj0mtQAKrnVwo2+T1VcLW+GF5GL0uX1dAJI9v7DVSdOwHq1t4+Ou8isz0E5/DatJDoRYTjsyA1d0fMUSWGl9JOca1NAQHJpKmajJM9cP+Akep9B6A9ejiWvjTDleDfAW+dagvTkfQToRF5cPKTFAVExM+lresG4CUHGiS+un5ys30RW6xwSl06IOE24g/UXK2RtZ9+PpIw4c+wyg2Ufw2xzi3+DIKo8mHgCsNWcvuvHNnBwH1PSwJdogVmtqN457jXRNv6QP404dEIEpE6f+j3iSla3WoSYbeM/VrjldjpLDVwQRaO43s7g9CBerGOZQKu2Sx7EIvbTCc4fC9BjqeAYw30NLyaobDaDbCA+/ZLm79mLk9bNYRxfearRYVtqa5mNj+hCaNl5P14f/RpjCmNrXchK2rosOqoyT7VXtxPDChYGX/Q00aJGkbuKVIKBFwLlH+kN48Abc1ODvBq62KUORE18qSdBgAh+5W15864lbFO2EQ4x11zBmGOZhHZQ7hpQi4efUoOfu4GH+hwTYrghUy6SfG83pqha6H0Spq"
+  region = "us-west-2"
 }
