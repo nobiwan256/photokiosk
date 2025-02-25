@@ -6,14 +6,13 @@ terraform {
     }
   }
 
-  /*
   cloud {
     organization = "nobiwan"
     workspaces {
       name = "photokiosk"
     }
   }
-  */
+
 }
 
 provider "aws" {
