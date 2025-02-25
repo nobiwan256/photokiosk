@@ -94,3 +94,8 @@ variable "rds_db_name" {
   type        = string
   default     = "wordpress_db"
 }
+
+variable "token" {
+  description = "A token for authentication or other purposes"
+  type        = string
+}
