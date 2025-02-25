@@ -86,6 +86,7 @@ variable "rds_password" {
   description = "Password for the RDS instance"
   type        = string
   sensitive   = true
+  default     = "SecurePassword123!"  # ✅ Default value added
 }
 
 variable "rds_db_name" {
@@ -97,4 +98,5 @@ variable "rds_db_name" {
 variable "s3_bucket_name" {
   description = "Name of the S3 bucket for WordPress files"
   type        = string
+  default     = "wordpress-bucket-${random_id.bucket_id.hex}"  # ✅ Default value added with randomness
 }
