@@ -113,3 +113,29 @@ variable "asg_desired_capacity" {
   type        = number
   default     = 1
 }
+
+# New variables to resolve errors
+variable "aws_access_key_id" {
+  description = "AWS Access Key ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "aws_secret_access_key" {
+  description = "AWS Secret Access Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "token" {
+  description = "AWS Session Token (if using temporary credentials)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "s3_bucket_name" {
+  description = "Name of the S3 bucket for WordPress assets"
+  type        = string
+  default     = "photokiosk000256"
+}
