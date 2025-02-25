@@ -21,7 +21,7 @@ provider "aws" {
   region                  = "us-west-2"
   access_key              = var.aws_access_key_id     # Use variable placeholders
   secret_key              = var.aws_secret_access_key
-  token                   = var.aws_session_token
+  token                   = var.token
 }
 
 # Define variables
