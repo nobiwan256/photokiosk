@@ -1,44 +1,14 @@
-##############################
-# Locals
-##############################
-locals {
-  raw_userdata = templatefile("${path.module}/userdata.tpl", {
-    wordpress_rds_endpoint = var.wordpress_rds_endpoint
-  })
-  wordpress_userdata = regexreplace(local.raw_userdata, "%\\{REQUEST_FILENAME\\}", "%%{REQUEST_FILENAME}")
-}
-
-##############################
-# EC2 Instance
-##############################
-resource "aws_instance" "instance" {
+resource "aws_instance" "wordpress_instance" {
   ami                         = var.ami_id
-  instance_type               = "t2.micro"
+  instance_type               = "t2.micro"  # Free tier eligible
   availability_zone           = var.availability_zone_1
   associate_public_ip_address = true
   key_name                    = var.key_name
   subnet_id                   = aws_subnet.public_1.id
-  vpc_security_group_ids      = [aws_security_group.sg_vpc.id]
-  count                       = 1
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
+  user_data                   = templatefile("userdata.tpl", { db_endpoint = aws_db_instance.wordpress_db.address })
 
   tags = {
-    Name = "${var.project_name}-instance"
-  }
-
-  user_data = base64encode(local.wordpress_userdata)
-
-  provisioner "local-exec" {
-    command = "echo Instance Type = ${self.instance_type}, Instance ID = ${self.id}, Public IP = ${self.public_ip}, AMI ID = ${self.ami} >> metadata"
+    Name = "${var.project_name}-wordpress"
   }
 }
-
-##############################
-# ALB & Target Group
-##############################
-resource "aws_lb_target_group" "target_group" {
-  name        = "${var.project_name}-tg"
-  port        = 80
-  protocol    = "HTTP"
-  target_type = "instance"
-  vpc_id      = aws_vpc.dev_v
-
