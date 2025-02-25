@@ -1,6 +1,7 @@
 ##############################
 # VPC and Subnets
 ##############################
+
 resource "aws_vpc" "dev_vpc" {
   cidr_block           = var.cidr_block
   enable_dns_hostnames = true
@@ -12,33 +13,54 @@ resource "aws_vpc" "dev_vpc" {
   }
 }
 
-resource "aws_subnet" "public" {
-  count                   = 2
+resource "aws_subnet" "public_1" {
   vpc_id                  = aws_vpc.dev_vpc.id
-  cidr_block              = element([var.public_subnet_cidr_1, var.public_subnet_cidr_2], count.index)
-  availability_zone       = element([var.availability_zone_1, var.availability_zone_2], count.index)
+  cidr_block              = var.public_subnet_cidr_1
+  availability_zone       = var.availability_zone_1
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.project_name}-public-${count.index + 1}"
+    Name = "${var.project_name}-public-1"
   }
 }
 
-resource "aws_subnet" "private" {
-  count                   = 2
+resource "aws_subnet" "public_2" {
   vpc_id                  = aws_vpc.dev_vpc.id
-  cidr_block              = element([var.private_subnet_cidr_1, var.private_subnet_cidr_2], count.index)
-  availability_zone       = element([var.availability_zone_1, var.availability_zone_2], count.index)
+  cidr_block              = var.public_subnet_cidr_2
+  availability_zone       = var.availability_zone_2
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${var.project_name}-public-2"
+  }
+}
+
+resource "aws_subnet" "private_1" {
+  vpc_id                  = aws_vpc.dev_vpc.id
+  cidr_block              = var.private_subnet_cidr_1
+  availability_zone       = var.availability_zone_1
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "${var.project_name}-private-${count.index + 1}"
+    Name = "${var.project_name}-private-1"
+  }
+}
+
+resource "aws_subnet" "private_2" {
+  vpc_id                  = aws_vpc.dev_vpc.id
+  cidr_block              = var.private_subnet_cidr_2
+  availability_zone       = var.availability_zone_2
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "${var.project_name}-private-2"
   }
 }
 
 ##############################
 # Internet Gateway
 ##############################
+
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.dev_vpc.id
 
@@ -50,6 +72,7 @@ resource "aws_internet_gateway" "igw" {
 ##############################
 # Route Tables and Associations
 ##############################
+
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.dev_vpc.id
 
@@ -63,8 +86,12 @@ resource "aws_route_table" "public_rt" {
   }
 }
 
-resource "aws_route_table_association" "public_assoc" {
-  count          = 2
+resource "aws_route_table_association" "public_1_assoc" {
   route_table_id = aws_route_table.public_rt.id
-  subnet_id      = element(aws_subnet.public[*].id, count.index)
+  subnet_id      = aws_subnet.public_1.id
+}
+
+resource "aws_route_table_association" "public_2_assoc" {
+  route_table_id = aws_route_table.public_rt.id
+  subnet_id      = aws_subnet.public_2.id
 }
