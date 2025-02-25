@@ -37,7 +37,7 @@ variable "aws_secret_access_key" {
   sensitive   = true
 }
 
-variable "aws_session_token" {
+variable "token" {
   description = "AWS Session Token"
   type        = string
   sensitive   = true
