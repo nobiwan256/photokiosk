@@ -1,7 +1,3 @@
-##############################
-# Auto Scaling Group Resources
-##############################
-
 # Launch Template
 resource "aws_launch_template" "wordpress_lt" {
   name_prefix            = "${var.project_name}-lt-"
