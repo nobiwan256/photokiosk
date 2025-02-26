@@ -2,5 +2,5 @@ aws_access_key_id     = "ASIAXPJ3LA3OWTQRI727"
 aws_secret_access_key = "HD0zCsdW4DRiV6TiUdH37ZdZwDW1dG4CStG9UqUt"
 token                 = "IQoJb3JpZ2luX2VjECYaCXVzLXdlc3QtMiJHMEUCIB73TajBe4UTvvwdmoqei2f7RIl8tpAtvX8FwQHx0NSfAiEAgmch3HugOgkQp47dQR0gdUc0DK92DPqSFaKrfnnov8UqpgIIXxABGgw1MTM5MDk5MTc0MDUiDA04rKPDkS/NJ4MwcyqDAho8xdwXGeJfqCY7yUdRlNc7PY5Yye/qmkzblrhTS7yo9idK8VGgimJACJKmD9dY8SDYhQgikbGqVsgl+f3rhV3dJlz+gPCqcsfZ58RU+VRhfDFvDtMJ2q2FVgY9WUuhmYPtIsAkaI0JGwlNIQgxEWageqxwJ8/U4mdTKNnYuyOn54OhSnwbW7Er6JTPeekgkcN1uRb2eWqT78sE9grBxBt+VrKomcJBV9xAKlU2ZsuPxKpjMSAdNdHBJxpdWP/ROwROj5m3vdkYVUSqv1vLI84Jh7OAFKDUifN3i0qDsKSwzhDDDi+hBRZreOrhXSrcecyvm+nocJA7zG4Ho4L3+9i0wgswlrn8vQY6nQGHQeBhMVRiFIFtEW1MzfKzIfAHNR6ndoYq8dkJ4ZIjVDG81GLGJ2G1DkwtZgMib2ZLX6YHZ7hG/I9UQwsWk96LE9ca9qRkOLsy4RAzyhDB4yJgyMN+qeH64Vgj/D5SuF8Xew2yfP/e4S79ZTr462c0fkdkZGfhiWhvAzjG65lGgTR3dv8LTiRo6Sfx/uIB/Db1ZrakmjZZBrmSUKxF"
 
-rds_password   = "YourSecurePassword123!"
-s3_bucket_name = "your-wordpress-bucket-name"
+rds_password   = "Password123!"
+s3_bucket_name = "s3bucket000256"
