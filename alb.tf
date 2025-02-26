@@ -1,8 +1,3 @@
-##############################
-# Load Balancer Resources
-##############################
-
-# Target Group
 resource "aws_lb_target_group" "wordpress_tg" {
   name        = "${var.project_name}-tg"
   port        = 80
@@ -11,7 +6,7 @@ resource "aws_lb_target_group" "wordpress_tg" {
   vpc_id      = aws_vpc.dev_vpc.id
 
   tags = {
-    Name = "${var.project_name}-target-group"
+    Name        = "${var.project_name}-target-group"
     Environment = var.env
   }
 
@@ -29,7 +24,6 @@ resource "aws_lb_target_group" "wordpress_tg" {
   depends_on = [aws_vpc.dev_vpc]
 }
 
-# Application Load Balancer
 resource "aws_lb" "wordpress_alb" {
   name               = "${var.project_name}-alb"
   internal           = false
@@ -39,7 +33,7 @@ resource "aws_lb" "wordpress_alb" {
   ip_address_type    = "ipv4"
 
   tags = {
-    Name = "${var.project_name}-alb"
+    Name        = "${var.project_name}-alb"
     Environment = var.env
   }
   
@@ -50,7 +44,6 @@ resource "aws_lb" "wordpress_alb" {
   ]
 }
 
-# ALB Listener
 resource "aws_lb_listener" "wordpress_http" {
   load_balancer_arn = aws_lb.wordpress_alb.arn
   port              = 80
