@@ -1,6 +1,4 @@
-##############################
 # VPC and Subnets
-##############################
 
 resource "aws_vpc" "dev_vpc" {
   cidr_block           = var.cidr_block
@@ -57,9 +55,7 @@ resource "aws_subnet" "private_2" {
   }
 }
 
-##############################
 # Internet Gateway
-##############################
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.dev_vpc.id
@@ -69,9 +65,8 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-##############################
+
 # Route Tables and Associations
-##############################
 
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.dev_vpc.id
