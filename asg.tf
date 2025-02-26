@@ -2,7 +2,7 @@
 resource "aws_launch_template" "wordpress_lt" {
   name_prefix            = "${var.project_name}-lt-"
   image_id               = "ami-0735c191cf914754d"  # Updated valid Amazon Linux 2 AMI for us-west-2
-  instance_type          = "t2.micro"  # Using t2.micro as requested
+  instance_type          = "t2.micro"
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   
@@ -40,7 +40,7 @@ resource "aws_autoscaling_group" "wordpress_asg" {
   vpc_zone_identifier = [aws_subnet.public_1.id, aws_subnet.public_2.id]
   target_group_arns   = [aws_lb_target_group.wordpress_tg.arn]
   health_check_type   = "ELB"
-  health_check_grace_period = 300
+  health_check_grace_period = 600  # Increased from 300 to 600 seconds
   
   launch_template {
     id      = aws_launch_template.wordpress_lt.id
@@ -75,6 +75,23 @@ resource "aws_autoscaling_group" "wordpress_asg" {
     aws_launch_template.wordpress_lt,
     aws_lb_target_group.wordpress_tg,
     aws_subnet.public_1,
-    aws_subnet.public_2
+    aws_subnet.public_2,
+    aws_db_instance.wordpress_db  # Explicitly wait for the database
   ]
+}
+
+# Auto Scaling Policy - CPU Based Scaling
+resource "aws_autoscaling_policy" "wordpress_cpu_policy" {
+  name                   = "${var.project_name}-cpu-policy"
+  autoscaling_group_name = aws_autoscaling_group.wordpress_asg.name
+  policy_type            = "TargetTrackingScaling"
+  
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+    target_value = 70.0
+  }
+  
+  depends_on = [aws_autoscaling_group.wordpress_asg]
 }
