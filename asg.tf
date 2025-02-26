@@ -1,12 +1,19 @@
+# Update asg.tf to ensure we have one persistent instance:
+
 # Launch Template
 resource "aws_launch_template" "wordpress_lt" {
   name_prefix            = "${var.project_name}-lt-"
-  image_id               = var.ami_id  # Make sure var.ami_id doesn't have brackets in the variable definition
+  image_id               = var.ami_id
   instance_type          = "t2.micro"
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   
-  user_data = base64encode(templatefile("userdata.tpl", { db_endpoint = aws_db_instance.wordpress_db.address }))
+  user_data = base64encode(templatefile("userdata.tpl", { 
+    db_endpoint = aws_db_instance.wordpress_db.address,
+    db_name     = var.rds_db_name,
+    db_user     = var.rds_username,
+    db_password = var.rds_password
+  }))
   
   tag_specifications {
     resource_type = "instance"
@@ -26,12 +33,13 @@ resource "aws_launch_template" "wordpress_lt" {
   ]
 }
 
-# Auto Scaling Group
+# Auto Scaling Group - with fixed capacity of 1
 resource "aws_autoscaling_group" "wordpress_asg" {
   name                = "${var.project_name}-asg"
-  desired_capacity    = var.asg_desired_capacity
-  min_size            = var.asg_min_size
-  max_size            = var.asg_max_size
+  # Fixed capacity of 1 to ensure persistence:
+  desired_capacity    = 1
+  min_size            = 1 
+  max_size            = var.asg_max_size  # Keep for scaling during high load
   vpc_zone_identifier = [aws_subnet.public_1.id, aws_subnet.public_2.id]
   target_group_arns   = [aws_lb_target_group.wordpress_tg.arn]
   health_check_type   = "ELB"
@@ -40,6 +48,14 @@ resource "aws_autoscaling_group" "wordpress_asg" {
   launch_template {
     id      = aws_launch_template.wordpress_lt.id
     version = "$Latest"
+  }
+  
+  # Adding instance protection to prevent termination of our persistent instance
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 100
+    }
   }
   
   tag {
@@ -66,7 +82,7 @@ resource "aws_autoscaling_group" "wordpress_asg" {
   ]
 }
 
-# Auto Scaling Policy - CPU Based Scaling
+# Auto Scaling Policy - CPU Based Scaling (keep this for scaling during high load)
 resource "aws_autoscaling_policy" "wordpress_cpu_policy" {
   name                   = "${var.project_name}-cpu-policy"
   autoscaling_group_name = aws_autoscaling_group.wordpress_asg.name
