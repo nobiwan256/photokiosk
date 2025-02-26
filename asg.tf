@@ -1,8 +1,8 @@
 # Launch Template
 resource "aws_launch_template" "wordpress_lt" {
   name_prefix            = "${var.project_name}-lt-"
-  image_id               = "ami-0747bdcabd34c712a"  # Hard-coded valid Amazon Linux 2 AMI for us-west-2
-  instance_type          = "t2.micro"
+  image_id               = "ami-0735c191cf914754d"  # Updated valid Amazon Linux 2 AMI for us-west-2
+  instance_type          = "t2.micro"  # Using t2.micro as requested
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   
@@ -77,20 +77,4 @@ resource "aws_autoscaling_group" "wordpress_asg" {
     aws_subnet.public_1,
     aws_subnet.public_2
   ]
-}
-
-# Auto Scaling Policy - CPU Based Scaling
-resource "aws_autoscaling_policy" "wordpress_cpu_policy" {
-  name                   = "${var.project_name}-cpu-policy"
-  autoscaling_group_name = aws_autoscaling_group.wordpress_asg.name
-  policy_type            = "TargetTrackingScaling"
-  
-  target_tracking_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = "ASGAverageCPUUtilization"
-    }
-    target_value = 70.0
-  }
-  
-  depends_on = [aws_autoscaling_group.wordpress_asg]
 }
