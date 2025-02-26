@@ -31,9 +31,9 @@ cd /var/www/html
 cp wp-config-sample.php wp-config.php
 
 # Update WordPress configuration
-sed -i 's/database_name_here/wordpress_db/' wp-config.php
-sed -i 's/username_here/sriwp_dbuser/' wp-config.php
-sed -i 's/password_here/Password123!#$/' wp-config.php
+sed -i "s/database_name_here/${db_name}/" wp-config.php
+sed -i "s/username_here/${db_user}/" wp-config.php
+sed -i "s/password_here/${db_password}/" wp-config.php
 
 # Wait for the RDS instance to be available
 echo "Waiting for database to become available at ${db_endpoint}" >> /var/log/wordpress-install.log
