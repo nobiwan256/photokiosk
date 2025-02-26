@@ -1,7 +1,3 @@
-##############################
-# EC2 Instance
-##############################
-
 resource "aws_instance" "wordpress_instance" {
   ami                    = var.ami_id  # Make sure var.ami_id doesn't have brackets in the variable definition
   instance_type          = "t2.micro"
