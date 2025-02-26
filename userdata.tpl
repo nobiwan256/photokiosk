@@ -106,17 +106,15 @@ cat > /etc/httpd/conf.d/wordpress.conf << 'EOF'
 </Directory>
 EOF
 
-# Create .htaccess file
-cat > /var/www/html/.htaccess << 'EOF'
-<IfModule mod_rewrite.c>
+# Create .htaccess file - Using a literal string to avoid template issues
+echo '<IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
-</IfModule>
-EOF
+</IfModule>' > /var/www/html/.htaccess
 
 # Set proper permissions for .htaccess
 chown apache:apache /var/www/html/.htaccess
