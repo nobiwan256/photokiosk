@@ -122,7 +122,7 @@ variable "aws_access_key_id" {
 }
 
 variable "aws_secret_access_key" {
-  description = "ua9KS+WS2R9gcsCXATGY7O0Kw52TCipSgJQjbWz4"
+  description = "HD0zCsdW4DRiV6TiUdH37ZdZwDW1dG4CStG9UqUt"
   type        = string
   sensitive   = true
 }
@@ -131,7 +131,7 @@ variable "token" {
   description = "AWS Session Token"
   type        = string
   sensitive   = true
-  default     = "IQoJb3JpZ2luX2VjEAgaCXVzLXdlc3QtMiJHMEUCIFcQzivSK9N8TTOpOC16qh5CcTzpDEgZ3+rQiE3+dzbaAiEAnUtzQTL7B2QiSLcI1d/bkPhhnqpnsP/LXotMhsmxXEEqpgIIQRABGgw1MTM5MDk5MTc0MDUiDOBLhpfGuf7pCpqGKiqDAnx1f0vpKL9qAxtBJ3pKQqooKXOTN4Oer9fnRFMpDdFDk94Rkc6LKdaMj2tiMBlg+yORDI/aWX/KsI30Gl8PjUPqfWmhYh3OaVucghlnzO7+4a3FHa7VK6JXiAae4UGW2LU0Eye/A/4oIVxGadKoLMIdw/qJHcKFSa31+2WGleZuzOu4rpDFK8HD8Q+C8oNvHqVwU63QX/AWpc9+CZ/NtVAyX/gE+X6WaMCX3NxKUWb+1/Xv3wXiCM0844OAw1EnFl5RmsGqup56fIGmXur2qP2e9Xr66F28Me4McB1XIKUjYNE56bdTatAlt5L+pz2MK58ni9Dp0uNkaQqzBMjKG4gSgp8w9vX1vQY6nQFyXEgxRLB+1a9wGS95iwB3rISiIc8i4Kgumos5FYfDS0k51W89hUmB3LtMAp+ACekqBs6/3sH6gsAkpl2wD0fGLUm2zbgXjtgU4SKtc/LvLoT+KqtCU1oayjoND3I2W2sDazNAlqVDbtOXcux6PYF1SVvtnRMA2y4gNC4PiAac8QLm0cYDan4IeNg/m08LyuP1gyFuJnyBvd86wcGx"
+  default     = "IQoJb3JpZ2luX2VjECYaCXVzLXdlc3QtMiJHMEUCIB73TajBe4UTvvwdmoqei2f7RIl8tpAtvX8FwQHx0NSfAiEAgmch3HugOgkQp47dQR0gdUc0DK92DPqSFaKrfnnov8UqpgIIXxABGgw1MTM5MDk5MTc0MDUiDA04rKPDkS/NJ4MwcyqDAho8xdwXGeJfqCY7yUdRlNc7PY5Yye/qmkzblrhTS7yo9idK8VGgimJACJKmD9dY8SDYhQgikbGqVsgl+f3rhV3dJlz+gPCqcsfZ58RU+VRhfDFvDtMJ2q2FVgY9WUuhmYPtIsAkaI0JGwlNIQgxEWageqxwJ8/U4mdTKNnYuyOn54OhSnwbW7Er6JTPeekgkcN1uRb2eWqT78sE9grBxBt+VrKomcJBV9xAKlU2ZsuPxKpjMSAdNdHBJxpdWP/ROwROj5m3vdkYVUSqv1vLI84Jh7OAFKDUifN3i0qDsKSwzhDDDi+hBRZreOrhXSrcecyvm+nocJA7zG4Ho4L3+9i0wgswlrn8vQY6nQGHQeBhMVRiFIFtEW1MzfKzIfAHNR6ndoYq8dkJ4ZIjVDG81GLGJ2G1DkwtZgMib2ZLX6YHZ7hG/I9UQwsWk96LE9ca9qRkOLsy4RAzyhDB4yJgyMN+qeH64Vgj/D5SuF8Xew2yfP/e4S79ZTr462c0fkdkZGfhiWhvAzjG65lGgTR3dv8LTiRo6Sfx/uIB/Db1ZrakmjZZBrmSUKxF
 }
 
 variable "s3_bucket_name" {
