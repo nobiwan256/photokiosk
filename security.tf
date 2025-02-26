@@ -38,7 +38,7 @@ resource "aws_security_group" "ec2_sg" {
   description = "Security group for WordPress EC2 instances"
   vpc_id      = aws_vpc.dev_vpc.id
 
-  # Allow traffic from ALB only
+  # Allow HTTP traffic from ALB
   ingress {
     description     = "HTTP from ALB"
     from_port       = 80
@@ -47,12 +47,22 @@ resource "aws_security_group" "ec2_sg" {
     security_groups = [aws_security_group.alb_sg.id]
   }
 
+  # Allow SSH access
   ingress {
     description = "SSH"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.ssh_cidr_block]
+  }
+
+  # Add explicit HTTPS inbound rule
+  ingress {
+    description     = "HTTPS from ALB"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
   }
 
   egress {
