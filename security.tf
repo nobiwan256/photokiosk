@@ -1,7 +1,3 @@
-##############################
-# Security Groups
-##############################
-
 # ALB Security Group
 resource "aws_security_group" "alb_sg" {
   name        = "${var.project_name}-alb-sg"
