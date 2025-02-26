@@ -25,6 +25,8 @@ resource "aws_db_instance" "wordpress_db" {
   publicly_accessible    = false
   backup_retention_period = 7
   deletion_protection    = false
+  multi_az               = false    # Explicitly set to false for free tier
+  apply_immediately      = true     # Apply changes immediately
 
   tags = {
     Name = "${var.project_name}-wordpress-db"
