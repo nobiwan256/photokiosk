@@ -1,5 +1,3 @@
-# Update asg.tf to ensure we have one persistent instance:
-
 # Launch Template
 resource "aws_launch_template" "wordpress_lt" {
   name_prefix            = "${var.project_name}-lt-"
@@ -33,13 +31,12 @@ resource "aws_launch_template" "wordpress_lt" {
   ]
 }
 
-# Auto Scaling Group - with fixed capacity of 1
+# Auto Scaling Group
 resource "aws_autoscaling_group" "wordpress_asg" {
   name                = "${var.project_name}-asg"
-  # Fixed capacity of 1 to ensure persistence:
-  desired_capacity    = 1
-  min_size            = 1 
-  max_size            = var.asg_max_size  # Keep for scaling during high load
+  desired_capacity    = 1  # Fixed at 1 for persistent instance
+  min_size            = 1  # Fixed at 1 for persistent instance
+  max_size            = var.asg_max_size  # Allow scaling for high load if needed
   vpc_zone_identifier = [aws_subnet.public_1.id, aws_subnet.public_2.id]
   target_group_arns   = [aws_lb_target_group.wordpress_tg.arn]
   health_check_type   = "ELB"
@@ -50,7 +47,7 @@ resource "aws_autoscaling_group" "wordpress_asg" {
     version = "$Latest"
   }
   
-  # Adding instance protection to prevent termination of our persistent instance
+  # This helps prevent termination of our persistent instance during updates
   instance_refresh {
     strategy = "Rolling"
     preferences {
@@ -82,7 +79,7 @@ resource "aws_autoscaling_group" "wordpress_asg" {
   ]
 }
 
-# Auto Scaling Policy - CPU Based Scaling (keep this for scaling during high load)
+# Auto Scaling Policy - CPU Based Scaling
 resource "aws_autoscaling_policy" "wordpress_cpu_policy" {
   name                   = "${var.project_name}-cpu-policy"
   autoscaling_group_name = aws_autoscaling_group.wordpress_asg.name
