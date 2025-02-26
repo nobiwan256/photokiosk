@@ -1,6 +1,4 @@
-##############################
 # RDS MySQL (Free Tier)
-##############################
 
 resource "aws_db_subnet_group" "wordpress_db_subnet_group" {
   name       = "${var.project_name}-db-subnet-group"
@@ -15,12 +13,12 @@ resource "aws_db_instance" "wordpress_db" {
   allocated_storage      = 20
   storage_type           = "gp2"
   engine                 = "mysql"
-  engine_version         = "8.0"  # Updated to MySQL 8.0 which is supported
-  instance_class         = "db.t3.micro"  # Updated to t3.micro which is supported
+  engine_version         = "8.0"
+  instance_class         = "db.t3.micro"
   db_name                = var.rds_db_name
   username               = var.rds_username
   password               = var.rds_password
-  parameter_group_name   = "default.mysql8.0"  # Updated parameter group
+  parameter_group_name   = "default.mysql8.0"
   db_subnet_group_name   = aws_db_subnet_group.wordpress_db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   skip_final_snapshot    = true
