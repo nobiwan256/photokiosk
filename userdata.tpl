@@ -106,15 +106,17 @@ cat > /etc/httpd/conf.d/wordpress.conf << 'EOF'
 </Directory>
 EOF
 
-# Create .htaccess file - Using a literal string to avoid template issues
-echo '<IfModule mod_rewrite.c>
+# Create .htaccess file with properly escaped template markers (%% instead of %)
+cat > /var/www/html/.htaccess << 'EOF'
+<IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
 RewriteRule ^index\.php$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %%{REQUEST_FILENAME} !-f
+RewriteCond %%{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
-</IfModule>' > /var/www/html/.htaccess
+</IfModule>
+EOF
 
 # Set proper permissions for .htaccess
 chown apache:apache /var/www/html/.htaccess
