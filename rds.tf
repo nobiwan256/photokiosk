@@ -1,5 +1,3 @@
-# RDS MySQL (Free Tier)
-
 resource "aws_db_subnet_group" "wordpress_db_subnet_group" {
   name       = "${var.project_name}-db-subnet-group"
   subnet_ids = [aws_subnet.private_1.id, aws_subnet.private_2.id]
@@ -25,8 +23,9 @@ resource "aws_db_instance" "wordpress_db" {
   publicly_accessible    = false
   backup_retention_period = 7
   deletion_protection    = false
-  multi_az               = false    # Explicitly set to false for free tier
-  apply_immediately      = true     # Apply changes immediately
+  multi_az               = true    # Changed to true to create a standby replica in the second AZ
+  apply_immediately      = true
+  availability_zone      = var.availability_zone_1  # Explicitly set primary to first AZ
 
   tags = {
     Name = "${var.project_name}-wordpress-db"
