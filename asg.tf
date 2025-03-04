@@ -1,7 +1,7 @@
 # Launch Template
 resource "aws_launch_template" "wordpress_lt" {
   name_prefix            = "${var.project_name}-lt-"
-  image_id               = "ami-0735c191cf914754d"  # Updated valid Amazon Linux 2 AMI for us-west-2
+  image_id               = var.ami_id  # Use the variable for AMI ID
   instance_type          = "t2.micro"
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
