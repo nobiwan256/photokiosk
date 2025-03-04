@@ -1,3 +1,16 @@
+# Create a DB subnet group using the private subnets for the RDS instance
+resource "aws_db_subnet_group" "wordpress_db_subnet_group" {
+  name        = "${var.project_name}-db-subnet-group"
+  description = "DB subnet group for WordPress RDS"
+  subnet_ids  = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+
+  tags = {
+    Name        = "${var.project_name}-db-subnet-group"
+    Environment = var.env
+  }
+}
+
+# RDS instance for WordPress
 resource "aws_db_instance" "wordpress_db" {
   allocated_storage      = 20
   storage_type           = "gp2"
