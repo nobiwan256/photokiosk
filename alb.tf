@@ -12,14 +12,14 @@ resource "aws_lb_target_group" "wordpress_tg" {
 
   health_check {
     enabled             = true
-    interval            = 60                  # Increased from 30 to 60 seconds
-    path                = "/wp-includes/js/jquery/jquery.min.js"  # WordPress core file
+    interval            = 60                  
+    path                = "/health.html"      # Simpler path for health check
     port                = "traffic-port"
     protocol            = "HTTP"
-    timeout             = 10                  # Increased from 5 to 10 seconds
+    timeout             = 10                  
     healthy_threshold   = 2
-    unhealthy_threshold = 3                   # Increased from 2 to 3
-    matcher             = "200,301,302,403"   # Accept more status codes
+    unhealthy_threshold = 3                   
+    matcher             = "200"               # Only accept HTTP 200 as healthy
   }
   
   depends_on = [aws_vpc.dev_vpc]
