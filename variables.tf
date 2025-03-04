@@ -43,7 +43,7 @@ variable "private_subnet_cidr_2" {
 variable "ami_id" {
   description = "AMI ID for the EC2 instance"
   type        = string
-  default     = "ami-0747bdcabd34c712a"
+  default     = "ami-0735c191cf914754d"  # Amazon Linux 2 AMI for us-west-2
 }
 
 variable "key_name" {
